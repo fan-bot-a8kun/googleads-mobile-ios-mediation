@@ -2,11 +2,12 @@
 //  GADMAdapterNend.m
 //  NendAdapter
 //
-//  Copyright © 2017 F@N Communications. All rights reserved.
+//  Copyright © 2017 FAN Communications. All rights reserved.
 //
 
 #import "GADMAdapterNend.h"
 #import "GADMAdapterNendConstants.h"
+#import "GADNendAdUnitMapper.h"
 
 @import NendAd;
 
@@ -191,10 +192,7 @@ static GADAdSize GADSupportedAdSizeFromRequestedSize(GADAdSize gadAdSize) {
 }
 
 - (BOOL)validateApiKey:(NSString *)apiKey spotId:(NSString *)spotId {
-  if (!apiKey || apiKey.length == 0 || !spotId || spotId.length == 0) {
-    return false;
-  }
-  return true;
+    return [GADNendAdUnitMapper validateApiKey:apiKey spotId:spotId];
 }
 
 - (void)willEnterForeground:(NSNotification *)notification {
