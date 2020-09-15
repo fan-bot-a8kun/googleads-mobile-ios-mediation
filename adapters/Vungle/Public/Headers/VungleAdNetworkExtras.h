@@ -1,4 +1,4 @@
-// Copyright 2019 Google Inc.
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,5 +36,9 @@
 @property(nonatomic, copy) NSArray<NSString *> *_Nullable allPlacements;
 
 @property(nonatomic, copy) NSString *_Nullable playingPlacement;
+
+@property(nonatomic, copy) NSNumber *_Nullable orientations;
+
+@property(nonatomic, copy, readonly) NSString *_Nonnull UUID;
 
 @end

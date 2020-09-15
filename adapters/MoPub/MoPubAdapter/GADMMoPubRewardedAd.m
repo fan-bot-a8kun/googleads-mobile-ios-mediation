@@ -5,8 +5,8 @@
 #import "GADMAdapterMoPubConstants.h"
 #import "GADMAdapterMoPubSingleton.h"
 #import "GADMAdapterMoPubUtils.h"
-#import "MPRewardedVideo.h"
-#import "MoPub.h"
+#import "GADMoPubNetworkExtras.h"
+#import <MoPub/MoPub.h>
 
 @interface GADMMoPubRewardedAd () <MPRewardedVideoDelegate>
 @end
@@ -51,9 +51,9 @@
 
   _adUnitID = adConfiguration.credentials.settings[kGADMAdapterMoPubPubIdKey];
   if ([_adUnitID length] == 0) {
-    NSString *description = @"Failed to request a MoPub rewarded ad. Ad unit ID is empty.";
-    NSError *error =
-        GADMAdapterMoPubErrorWithCodeAndDescription(kGADErrorMediationAdapterError, description);
+    NSError *error = GADMoPubErrorWithCodeAndDescription(
+        GADMoPubErrorInvalidServerParameters,
+        @"Failed to request a MoPub rewarded ad. Ad unit ID is empty.");
     completionHandler(nil, error);
     return;
   }
@@ -77,14 +77,7 @@
 
 - (void)presentFromViewController:(nonnull UIViewController *)viewController {
   // MoPub ads have a 4-hour expiration time window
-  if ([MPRewardedVideo hasAdAvailableForAdUnitID:_adUnitID]) {
-    NSArray *rewards = [MPRewardedVideo availableRewardsForAdUnitID:_adUnitID];
-    MPRewardedVideoReward *reward = rewards[0];
-
-    [MPRewardedVideo presentRewardedVideoAdForAdUnitID:_adUnitID
-                                    fromViewController:viewController
-                                            withReward:reward];
-  } else {
+  if (![MPRewardedVideo hasAdAvailableForAdUnitID:_adUnitID]) {
     NSString *description;
     if (_adExpired) {
       description = @"Failed to show a MoPub rewarded ad. Ad has expired after 4 hours. "
@@ -94,9 +87,19 @@
     }
 
     NSError *error =
-        GADMAdapterMoPubErrorWithCodeAndDescription(kGADErrorMediationAdapterError, description);
+        GADMoPubErrorWithCodeAndDescription(GADMoPubErrorInvalidServerParameters, description);
     [_adEventDelegate didFailToPresentWithError:error];
+    return;
   }
+
+  NSArray *rewards = [MPRewardedVideo availableRewardsForAdUnitID:_adUnitID];
+  MPRewardedVideoReward *reward = rewards[0];
+
+  GADMoPubNetworkExtras *extras = _adConfig.extras;
+  [MPRewardedVideo presentRewardedVideoAdForAdUnitID:_adUnitID
+                                  fromViewController:viewController
+                                          withReward:reward
+                                          customData:extras.customRewardData];
 }
 
 #pragma mark GADMAdapterMoPubRewardedAdDelegate methods

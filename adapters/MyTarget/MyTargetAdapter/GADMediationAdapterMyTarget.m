@@ -1,4 +1,4 @@
-// Copyright 2019 Google Inc.
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,21 +13,24 @@
 // limitations under the License.
 
 #import "GADMediationAdapterMyTarget.h"
+
 #import <MyTargetSDK/MyTargetSDK.h>
+
 #import "GADMAdapterMyTargetConstants.h"
 #import "GADMAdapterMyTargetExtras.h"
-#import "GADMRewardedAdMyTarget.h"
+#import "GADMAdapterMyTargetRewardedAd.h"
 
 @interface GADMediationAdapterMyTarget ()
 
-@property(nonatomic, strong) GADMRewardedAdMyTarget *rewardedAd;
-
 @end
 
-@implementation GADMediationAdapterMyTarget
+@implementation GADMediationAdapterMyTarget {
+  /// myTarget rewarded ad wrapper.
+  GADMAdapterMyTargetRewardedAd *_rewardedAd;
+}
 
-+ (void)setUpWithConfiguration:(GADMediationServerConfiguration *)configuration
-             completionHandler:(GADMediationAdapterSetUpCompletionBlock)completionHandler {
++ (void)setUpWithConfiguration:(nonnull GADMediationServerConfiguration *)configuration
+             completionHandler:(nonnull GADMediationAdapterSetUpCompletionBlock)completionHandler {
   // INFO: MyTarget SDK doesn't have any initialization API.
   completionHandler(nil);
 }
@@ -51,6 +54,10 @@
 }
 
 + (GADVersionNumber)version {
+  return [GADMediationAdapterMyTarget adapterVersion];
+}
+
++ (GADVersionNumber)adapterVersion {
   NSString *versionString = kGADMAdapterMyTargetVersion;
   NSArray<NSString *> *components = [versionString componentsSeparatedByString:@"."];
   GADVersionNumber version = {0};
@@ -62,12 +69,13 @@
   return version;
 }
 
-- (void)loadRewardedAdForAdConfiguration:(GADMediationRewardedAdConfiguration *)adConfiguration
+- (void)loadRewardedAdForAdConfiguration:
+            (nonnull GADMediationRewardedAdConfiguration *)adConfiguration
                        completionHandler:
-                           (GADMediationRewardedLoadCompletionHandler)completionHandler {
-  self.rewardedAd = [[GADMRewardedAdMyTarget alloc] init];
-  [self.rewardedAd loadRewardedAdForAdConfiguration:adConfiguration
-                                  completionHandler:completionHandler];
+                           (nonnull GADMediationRewardedLoadCompletionHandler)completionHandler {
+  _rewardedAd = [[GADMAdapterMyTargetRewardedAd alloc] initWithAdConfiguration:adConfiguration
+                                                             completionHandler:completionHandler];
+  [_rewardedAd loadRewardedAd];
 }
 
 @end

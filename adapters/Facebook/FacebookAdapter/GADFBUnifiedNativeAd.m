@@ -51,12 +51,6 @@
   FBMediaView *_mediaView;
 }
 
-/// Empty method to bypass Apple's private method checking since
-/// GADMediatedUnifiedNativeAdNotificationSource's mediatedNativeAdDidRecordImpression method is
-/// dynamically called by this class's instances.
-+ (void)mediatedNativeAdDidRecordImpression:(id<GADMediatedNativeAd>)mediatedNativeAd {
-}
-
 - (instancetype)initWithGADMAdNetworkConnector:(nonnull id<GADMAdNetworkConnector>)connector
                                        adapter:(nonnull id<GADMAdNetworkAdapter>)adapter {
   self = [super initWithGADMAdNetworkConnector:connector adapter:adapter];
@@ -79,7 +73,8 @@
   // nil.
   NSString *placementID = [strongConnector publisherId];
   if (!placementID) {
-    NSError *error = GADFBErrorWithDescription(@"Placement ID cannot be nil.");
+    NSError *error =
+        GADFBErrorWithCodeAndDescription(GADFBErrorInvalidRequest, @"Placement ID cannot be nil.");
     [strongConnector adapter:strongAdapter didFailAd:error];
     return;
   }
@@ -91,7 +86,7 @@
   if (!_nativeAd) {
     NSString *description = [[NSString alloc]
         initWithFormat:@"Failed to initialize %@.", NSStringFromClass([FBNativeAd class])];
-    NSError *error = GADFBErrorWithDescription(description);
+    NSError *error = GADFBErrorWithCodeAndDescription(GADFBErrorAdObjectNil, description);
     [strongConnector adapter:strongAdapter didFailAd:error];
     return;
   }
@@ -110,6 +105,10 @@
     return @{GADFBSocialContext : socialContext};
   }
   return nil;
+}
+
+- (nullable GADNativeAdImage *)icon {
+  return [[GADNativeAdImage alloc] initWithImage:_nativeAd.iconImage];
 }
 
 - (nullable NSString *)headline {
@@ -142,7 +141,7 @@
 }
 
 - (CGFloat)mediaContentAspectRatio{
-  return _mediaView.aspectRatio;
+  return _nativeAd.aspectRatio;
 }
 
 #pragma mark - GADMediatedUnifiedNativeAd

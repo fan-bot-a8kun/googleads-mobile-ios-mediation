@@ -18,11 +18,12 @@
 #import <FBAudienceNetwork/FBAudienceNetwork.h>
 #import <GoogleMobileAds/GoogleMobileAds.h>
 
-NSError *_Nonnull GADFBErrorWithDescription(NSString *_Nonnull description) {
+NSError *_Nonnull GADFBErrorWithCodeAndDescription(GADFBErrorCode code,
+                                                   NSString *_Nonnull description) {
   NSDictionary *userInfo =
       @{NSLocalizedDescriptionKey : description, NSLocalizedFailureReasonErrorKey : description};
   NSError *error = [NSError errorWithDomain:@"com.google.mediation.facebook"
-                                       code:0
+                                       code:code
                                    userInfo:userInfo];
   return error;
 }
@@ -38,4 +39,8 @@ void GADMAdapterFacebookMutableSetAddObject(NSMutableSet *_Nullable set,
   if (object) {
     [set addObject:object];  // Allow pattern.
   }
+}
+
+void GADMAdapterFacebookSetMixedAudience(NSNumber *_Nonnull childDirectedTreatment) {
+  [FBAdSettings setMixedAudience:childDirectedTreatment.boolValue];
 }

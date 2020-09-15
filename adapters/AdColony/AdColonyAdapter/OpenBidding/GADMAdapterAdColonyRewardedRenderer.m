@@ -35,11 +35,15 @@
 
   /// The completion handler to call when the ad loading succeeds or fails.
   GADMediationRewardedLoadCompletionHandler _loadCompletionHandler;
+
+  /// Ad configuration for the ad to be loaded.
+  GADMediationRewardedAdConfiguration *_adConfiguration;
 }
 
 - (void)loadRewardedAdForAdConfiguration:(nonnull GADMediationRewardedAdConfiguration *)adConfig
                        completionHandler:
                            (nonnull GADMediationRewardedLoadCompletionHandler)handler {
+  _adConfiguration = adConfig;
   __block atomic_flag completionHandlerCalled = ATOMIC_FLAG_INIT;
   __block GADMediationRewardedLoadCompletionHandler originalCompletionHandler = [handler copy];
   _loadCompletionHandler = ^id<GADMediationRewardedAdEventDelegate>(
@@ -55,10 +59,14 @@
     return delegate;
   };
 
+  [self loadAd];
+}
+
+- (void)loadAd {
   GADMAdapterAdColonyRewardedRenderer *__weak weakSelf = self;
 
   [GADMAdapterAdColonyHelper
-      setupZoneFromAdConfig:adConfig
+      setupZoneFromAdConfig:_adConfiguration
                    callback:^(NSString *zone, NSError *error) {
                      GADMAdapterAdColonyRewardedRenderer *strongSelf = weakSelf;
                      if (!strongSelf) {
@@ -71,8 +79,8 @@
                        return;
                      }
                      GADMAdapterAdColonyLog(@"Requesting rewarded ad for zone: %@", zone);
-                     AdColonyAdOptions *options =
-                         [GADMAdapterAdColonyHelper getAdOptionsFromAdConfig:adConfig];
+                     AdColonyAdOptions *options = [GADMAdapterAdColonyHelper
+                         getAdOptionsFromAdConfig:strongSelf->_adConfiguration];
                      [AdColony requestInterstitialInZone:zone
                                                  options:options
                                              andDelegate:strongSelf];
@@ -93,10 +101,10 @@
   }];
 
   if (![_rewardedAd showWithPresentingViewController:viewController]) {
-    NSString *errorMessage = @"Failed to show ad for zone";
-    GADMAdapterAdColonyLog(@"%@: %@.", errorMessage, _rewardedAd.zoneID);
-    NSError *error = GADMAdapterAdColonyErrorWithCodeAndDescription(kGADErrorMediationAdapterError,
-                                                                    errorMessage);
+    NSString *errorMessage = (@"Failed to show ad for zone: %@", _rewardedAd.zoneID);
+    GADMAdapterAdColonyLog(@"%@", errorMessage);
+    NSError *error =
+        GADMAdapterAdColonyErrorWithCodeAndDescription(GADMAdapterAdColonyErrorShow, errorMessage);
     [_adEventDelegate didFailToPresentWithError:error];
   }
 }
@@ -110,8 +118,8 @@
     NSString *errorMessage =
         @"Zone used for rewarded video is not a rewarded video zone on AdColony portal.";
     GADMAdapterAdColonyLog(@"%@", errorMessage);
-    NSError *error =
-        GADMAdapterAdColonyErrorWithCodeAndDescription(kGADErrorInvalidRequest, errorMessage);
+    NSError *error = GADMAdapterAdColonyErrorWithCodeAndDescription(
+        GADMAdapterAdColonyErrorZoneNotRewarded, errorMessage);
     _loadCompletionHandler(nil, error);
     return;
   }
@@ -122,9 +130,7 @@
 
 - (void)adColonyInterstitialDidFailToLoad:(nonnull AdColonyAdRequestError *)error {
   GADMAdapterAdColonyLog(@"Failed to load rewarded ad with error: %@", error.localizedDescription);
-  NSError *requestError =
-      GADMAdapterAdColonyErrorWithCodeAndDescription(kGADErrorNoFill, error.localizedDescription);
-  _loadCompletionHandler(nil, requestError);
+  _loadCompletionHandler(nil, error);
 }
 
 - (void)adColonyInterstitialWillOpen:(nonnull AdColonyInterstitial *)interstitial {
@@ -142,6 +148,18 @@
 }
 
 - (void)adColonyInterstitialExpired:(nonnull AdColonyInterstitial *)interstitial {
+  // Only reload an ad on open bidding, where AdColony would otherwise be charged for an impression
+  // it couldn't show. Don't reload ads for regular mediation, as it has side effects on reporting.
+  if (_adConfiguration.bidResponse) {
+    // Re-requesting rewarded ad to avoid the following situation:
+    // 1. Request a rewarded ad from AdColony.
+    // 2. AdColony ad loads. Adapter sends a callback saying the ad has been loaded.
+    // 3. AdColony ad expires due to timeout.
+    // 4. Publisher will not be able to present the ad as it has expired.
+    [self loadAd];
+    return;
+  }
+
   // Each time AdColony's SDK is configured, it discards previously loaded ads. Publishers should
   // initialize the GMA SDK and wait for initialization to complete to ensure that AdColony's SDK
   // gets initialized with all known zones.

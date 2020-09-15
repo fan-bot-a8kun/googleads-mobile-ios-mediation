@@ -18,6 +18,7 @@
 #import "GADFBInterstitialRenderer.h"
 #import "GADFBNativeRenderer.h"
 #import "GADFBNetworkExtras.h"
+#import "GADFBRewardedInterstitialRenderer.h"
 #import "GADFBRewardedRenderer.h"
 #import "GADFBUtils.h"
 #import "GADMAdapterFacebook.h"
@@ -32,6 +33,8 @@
   GADFBInterstitialRenderer *_interstitial;
   /// Facebook Audience Network banner ad wrapper.
   GADFBBannerRenderer *_banner;
+  /// Facebook Audience Network rewarded interstitial ad wrapper.
+  GADFBRewardedInterstitialRenderer *_rewardedInterstitialAd;
 }
 
 + (void)setUpWithConfiguration:(nonnull GADMediationServerConfiguration *)configuration
@@ -54,7 +57,8 @@
                              completionHandler:^(FBAdInitResults *_Nonnull results) {
                                NSError *error = nil;
                                if (!results.success) {
-                                 error = GADFBErrorWithDescription(results.message);
+                                 error = GADFBErrorWithCodeAndDescription(
+                                     GADFBErrorInitializationFailure, results.message);
                                }
                                completionHandler(error);
                              }];
@@ -69,6 +73,10 @@
 }
 
 + (GADVersionNumber)version {
+  return [GADMediationAdapterFacebook adapterVersion];
+}
+
++ (GADVersionNumber)adapterVersion {
   GADVersionNumber version = {0};
   NSArray<NSString *> *components = [kGADMAdapterFacebookVersion componentsSeparatedByString:@"."];
   if (components.count == 4) {
@@ -105,9 +113,8 @@
 
 - (void)loadBannerForAdConfiguration:(GADMediationBannerAdConfiguration *)adConfiguration
                    completionHandler:(GADMediationBannerLoadCompletionHandler)completionHandler {
-  if ([adConfiguration respondsToSelector:@selector(childDirectedTreatment)] &&
-      adConfiguration.childDirectedTreatment) {
-    [FBAdSettings setIsChildDirected:[adConfiguration.childDirectedTreatment boolValue]];
+  if (adConfiguration.childDirectedTreatment) {
+    GADMAdapterFacebookSetMixedAudience(adConfiguration.childDirectedTreatment);
   }
 
   _banner = [[GADFBBannerRenderer alloc] init];
@@ -118,9 +125,8 @@
             (GADMediationInterstitialAdConfiguration *)adConfiguration
                          completionHandler:
                              (GADMediationInterstitialLoadCompletionHandler)completionHandler {
-  if ([adConfiguration respondsToSelector:@selector(childDirectedTreatment)] &&
-      adConfiguration.childDirectedTreatment) {
-    [FBAdSettings setIsChildDirected:[adConfiguration.childDirectedTreatment boolValue]];
+  if (adConfiguration.childDirectedTreatment) {
+    GADMAdapterFacebookSetMixedAudience(adConfiguration.childDirectedTreatment);
   }
 
   _interstitial = [[GADFBInterstitialRenderer alloc] init];
@@ -131,20 +137,30 @@
 - (void)loadRewardedAdForAdConfiguration:(GADMediationRewardedAdConfiguration *)adConfiguration
                        completionHandler:
                            (GADMediationRewardedLoadCompletionHandler)completionHandler {
-  if ([adConfiguration respondsToSelector:@selector(childDirectedTreatment)] &&
-      adConfiguration.childDirectedTreatment) {
-    [FBAdSettings setIsChildDirected:[adConfiguration.childDirectedTreatment boolValue]];
+  if (adConfiguration.childDirectedTreatment) {
+    GADMAdapterFacebookSetMixedAudience(adConfiguration.childDirectedTreatment);
   }
   _rewardedAd = [[GADFBRewardedRenderer alloc] init];
   [_rewardedAd loadRewardedAdForAdConfiguration:adConfiguration
                               completionHandler:completionHandler];
 }
 
+- (void)loadRewardedInterstitialAdForAdConfiguration:
+            (GADMediationRewardedAdConfiguration *)adConfiguration
+                                   completionHandler:(GADMediationRewardedLoadCompletionHandler)
+                                                         completionHandler {
+  if (adConfiguration.childDirectedTreatment) {
+    GADMAdapterFacebookSetMixedAudience(adConfiguration.childDirectedTreatment);
+  }
+  _rewardedInterstitialAd = [[GADFBRewardedInterstitialRenderer alloc] init];
+  [_rewardedInterstitialAd loadRewardedAdForAdConfiguration:adConfiguration
+                                          completionHandler:completionHandler];
+}
+
 - (void)loadNativeAdForAdConfiguration:(GADMediationNativeAdConfiguration *)adConfiguration
                      completionHandler:(GADMediationNativeLoadCompletionHandler)completionHandler {
-  if ([adConfiguration respondsToSelector:@selector(childDirectedTreatment)] &&
-      adConfiguration.childDirectedTreatment) {
-    [FBAdSettings setIsChildDirected:[adConfiguration.childDirectedTreatment boolValue]];
+  if (adConfiguration.childDirectedTreatment) {
+    GADMAdapterFacebookSetMixedAudience(adConfiguration.childDirectedTreatment);
   }
   _native = [[GADFBNativeRenderer alloc] init];
   [_native renderNativeAdForAdConfiguration:adConfiguration completionHandler:completionHandler];

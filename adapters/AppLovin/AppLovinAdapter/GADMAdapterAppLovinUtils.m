@@ -10,6 +10,7 @@
 #import <AppLovinSDK/AppLovinSDK.h>
 #import "GADMAdapterAppLovinConstant.h"
 #import "GADMAdapterAppLovinExtras.h"
+#import "GADMediationAdapterAppLovin.h"
 
 static const NSUInteger kALSDKKeyLength = 86;
 static const NSUInteger kALZoneIdentifierLength = 16;
@@ -71,14 +72,23 @@ void GADMAdapterAppLovinMutableDictionaryRemoveObjectForKey(
   }
 }
 
-NSError *_Nonnull GADMAdapterAppLovinErrorWithCodeAndDescription(GADErrorCode code,
+NSError *_Nonnull GADMAdapterAppLovinErrorWithCodeAndDescription(GADMAdapterAppLovinErrorCode code,
                                                                  NSString *_Nonnull description) {
-  [GADMAdapterAppLovinUtils log:description];
   NSError *error = [NSError errorWithDomain:GADMAdapterAppLovinErrorDomain
                                        code:code
                                    userInfo:@{NSLocalizedFailureReasonErrorKey : description}];
   return error;
 }
+
+NSError *_Nonnull GADMAdapterAppLovinSDKErrorWithCode(NSInteger code) {
+  NSError *error = [NSError
+      errorWithDomain:GADMAdapterAppLovinSDKErrorDomain
+                 code:code
+             userInfo:@{
+               NSLocalizedFailureReasonErrorKey : @"AppLovin SDK returned a failure callback."
+             }];
+  return error;
+};
 
 @implementation GADMAdapterAppLovinUtils
 
@@ -142,29 +152,18 @@ NSError *_Nonnull GADMAdapterAppLovinErrorWithCodeAndDescription(GADErrorCode co
   return nil;
 }
 
-+ (GADErrorCode)toAdMobErrorCode:(int)code {
-  if (code == kALErrorCodeNoFill) {
-    return kGADErrorNoFill;
-  } else if (code == kALErrorCodeAdRequestNetworkTimeout) {
-    return kGADErrorTimeout;
-  } else if (code == kALErrorCodeInvalidResponse) {
-    return kGADErrorReceivedInvalidResponse;
-  } else if (code == kALErrorCodeUnableToRenderAd) {
-    return kGADErrorServerError;
-  } else {
-    return kGADErrorInternalError;
-  }
-}
-
 #pragma mark - Banner Util Methods
 
 + (nullable ALAdSize *)appLovinAdSizeFromRequestedSize:(GADAdSize)size {
   GADAdSize banner = GADAdSizeFromCGSize(CGSizeMake(320, 50));
   GADAdSize leaderboard = GADAdSizeFromCGSize(CGSizeMake(728, 90));
-  GADAdSize mRect = GADAdSizeFromCGSize(CGSizeMake(300, 250));
-  NSArray *potentials = @[
-    NSValueFromGADAdSize(banner), NSValueFromGADAdSize(mRect), NSValueFromGADAdSize(leaderboard)
-  ];
+  NSArray<NSValue *> *potentials = @[ NSValueFromGADAdSize(banner) ];
+  if (IS_IPAD) {
+    // iPad also supports 728x90.
+    potentials = @[
+      NSValueFromGADAdSize(banner), NSValueFromGADAdSize(leaderboard)
+    ];
+  }
   GADAdSize closestSize = GADClosestValidSizeForAdSizes(size, potentials);
   CGSize closestCGSize = CGSizeFromGADAdSize(closestSize);
   if (CGSizeEqualToSize(CGSizeFromGADAdSize(banner), closestCGSize)) {
@@ -172,9 +171,6 @@ NSError *_Nonnull GADMAdapterAppLovinErrorWithCodeAndDescription(GADErrorCode co
   }
   if (CGSizeEqualToSize(CGSizeFromGADAdSize(leaderboard), closestCGSize)) {
     return ALAdSize.leader;
-  }
-  if (CGSizeEqualToSize(CGSizeFromGADAdSize(mRect), closestCGSize)) {
-    return ALAdSize.mrec;
   }
 
   [GADMAdapterAppLovinUtils

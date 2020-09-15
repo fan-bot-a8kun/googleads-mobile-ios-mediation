@@ -44,12 +44,6 @@
   atomic_flag _impressionLogged;
 }
 
-/// Empty method to bypass Apple's private method checking since
-/// GADMediatedUnifiedNativeAdNotificationSource's mediatedNativeAdDidRecordImpression method is
-/// dynamically called by this class's instances.
-+ (void)mediatedNativeAdDidRecordImpression:(id<GADMediatedNativeAd>)mediatedNativeAd {
-}
-
 - (nonnull instancetype)initWithGADMAdNetworkConnector:(nonnull id<GADMAdNetworkConnector>)connector
                                                adapter:(nonnull id<GADMAdNetworkAdapter>)adapter {
   self = [super initWithGADMAdNetworkConnector:connector adapter:adapter];
@@ -72,7 +66,8 @@
   // ID is nil.
   NSString *placementID = [strongConnector publisherId];
   if (!placementID) {
-    NSError *error = GADFBErrorWithDescription(@"Placement ID cannot be nil.");
+    NSError *error =
+        GADFBErrorWithCodeAndDescription(GADFBErrorInvalidRequest, @"Placement ID cannot be nil");
     [strongConnector adapter:strongAdapter didFailAd:error];
     return;
   }
@@ -84,7 +79,7 @@
   if (!_nativeBannerAd) {
     NSString *description = [[NSString alloc]
         initWithFormat:@"Failed to initialize %@.", NSStringFromClass([FBNativeBannerAd class])];
-    NSError *error = GADFBErrorWithDescription(description);
+    NSError *error = GADFBErrorWithCodeAndDescription(GADFBErrorAdObjectNil, description);
     [strongConnector adapter:strongAdapter didFailAd:error];
     return;
   }
@@ -103,6 +98,10 @@
     return @{GADFBSocialContext : socialContext};
   }
   return nil;
+}
+
+- (nullable GADNativeAdImage *)icon {
+  return [[GADNativeAdImage alloc] initWithImage:_nativeBannerAd.iconImage];
 }
 
 - (nullable NSString *)headline {

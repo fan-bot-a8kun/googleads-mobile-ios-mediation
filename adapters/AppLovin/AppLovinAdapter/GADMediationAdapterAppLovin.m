@@ -54,9 +54,8 @@
 
   if (!sdkKeys.count) {
     NSString *errorString = @"No SDK keys are found. Please add valid SDK keys in the AdMob UI.";
-    [GADMAdapterAppLovinUtils log:errorString];
-    NSError *error =
-        GADMAdapterAppLovinErrorWithCodeAndDescription(kGADErrorMediationAdapterError, errorString);
+    NSError *error = GADMAdapterAppLovinErrorWithCodeAndDescription(
+        GADMAdapterAppLovinErrorMissingSDKKey, errorString);
     completionHandler(error);
     return;
   }
@@ -66,26 +65,25 @@
           (unsigned long)sdkKeys.count];
 
   // Initialize SDKs based on SDK keys.
-  NSSet<NSString *> *sdkKeysCopy = [sdkKeys copy];
-  for (NSString *sdkKey in sdkKeysCopy) {
-    [GADMAdapterAppLovinUtils log:@"Initializing SDK for SDK key %@", sdkKey];
-
+  dispatch_group_t group = dispatch_group_create();
+  for (NSString *sdkKey in sdkKeys) {
+    dispatch_group_enter(group);
     ALSdk *sdk = [GADMAdapterAppLovinUtils retrieveSDKFromSDKKey:sdkKey];
     [sdk initializeSdkWithCompletionHandler:^(ALSdkConfiguration *configuration) {
-      [GADMAdapterAppLovinUtils log:@"Initialization completed for SDK key %@", sdkKey];
-      GADMAdapterAppLovinMutableSetRemoveObject(sdkKeys, sdkKey);
-
-      // Once all instances of SDK keys have been initialized, callback the initialization
-      // listener.
-      if (sdkKeys.count == 0) {
-        [GADMAdapterAppLovinUtils log:@"All SDK(s) completed initialization"];
-        completionHandler(nil);
-      }
+      dispatch_group_leave(group);
     }];
   }
+  dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+    [GADMAdapterAppLovinUtils log:@"All SDKs completed initialization."];
+    completionHandler(nil);
+  });
 }
 
 + (GADVersionNumber)version {
+  return [GADMediationAdapterAppLovin adapterVersion];
+}
+
++ (GADVersionNumber)adapterVersion {
   NSString *versionString = GADMAdapterAppLovinAdapterVersion;
   NSArray *versionComponents = [versionString componentsSeparatedByString:@"."];
   [GADMAdapterAppLovinUtils
@@ -125,31 +123,31 @@
   [GADMAdapterAppLovinUtils log:@"AppLovin adapter collecting signals."];
   // Check if supported ad format.
   if (params.configuration.credentials.firstObject.format == GADAdFormatNative) {
-    [self handleCollectSignalsFailureForMessage:
-              @"Requested to collect signal for unsupported native ad format. Ignoring..."
-                              completionHandler:completionHandler];
+    NSError *error = GADMAdapterAppLovinErrorWithCodeAndDescription(
+        GADMAdapterAppLovinErrorUnsupportedAdFormat,
+        @"Requested to collect signal for unsupported native ad format. Ignoring...");
+    completionHandler(nil, error);
     return;
   }
-
+    
   ALSdk *sdk = [GADMAdapterAppLovinUtils
       retrieveSDKFromCredentials:params.configuration.credentials.firstObject.settings];
-
+  if (!sdk) {
+    NSError *error = GADMAdapterAppLovinErrorWithCodeAndDescription(
+        GADMAdapterAppLovinErrorInvalidServerParameters, @"Invalid server parameters.");
+    completionHandler(nil, error);
+    return;
+  }
   NSString *signal = sdk.adService.bidToken;
 
   if (signal.length > 0) {
     [GADMAdapterAppLovinUtils log:@"Generated bid token %@.", signal];
     completionHandler(signal, nil);
   } else {
-    [self handleCollectSignalsFailureForMessage:@"Failed to generate bid token."
-                              completionHandler:completionHandler];
+    NSError *error = GADMAdapterAppLovinErrorWithCodeAndDescription(
+        GADMAdapterAppLovinErrorEmptyBidToken, @"Bid token is empty.");
+    completionHandler(nil, error);
   }
-}
-
-- (void)handleCollectSignalsFailureForMessage:(NSString *)errorMessage
-                            completionHandler:(GADRTBSignalCompletionHandler)completionHandler {
-  NSError *error =
-      GADMAdapterAppLovinErrorWithCodeAndDescription(kGADErrorMediationAdapterError, errorMessage);
-  completionHandler(nil, error);
 }
 
 #pragma mark - GADMediationAdapter load Ad

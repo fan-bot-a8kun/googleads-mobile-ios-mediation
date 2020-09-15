@@ -5,8 +5,7 @@
 #import "GADMAdapterMoPubUtils.h"
 #import "GADMMoPubRewardedAd.h"
 #import "GADMoPubNetworkExtras.h"
-#import "MPRewardedVideo.h"
-#import "MoPub.h"
+#import <MoPub/MoPub.h>
 
 @implementation GADMediationAdapterMoPub {
   /// MoPub rewarded ad wrapper.
@@ -26,8 +25,9 @@
                                                                completionHandler(nil);
                                                              }];
   } else {
-    NSError *error = GADMAdapterMoPubErrorWithCodeAndDescription(
-        kGADErrorMediationAdapterError, @"Failed to initialize MoPub SDK. Ad unit ID is empty.");
+    NSError *error = GADMoPubErrorWithCodeAndDescription(
+        GADMoPubErrorInvalidServerParameters,
+        @"Failed to initialize MoPub SDK. Ad unit ID is empty.");
     completionHandler(error);
   }
 }
@@ -50,6 +50,10 @@
 }
 
 + (GADVersionNumber)version {
+  return [GADMediationAdapterMoPub adapterVersion];
+}
+
++ (GADVersionNumber)adapterVersion {
   NSArray *versionComponents = [kGADMAdapterMoPubVersion componentsSeparatedByString:@"."];
   GADVersionNumber version = {0};
   if (versionComponents.count >= 4) {

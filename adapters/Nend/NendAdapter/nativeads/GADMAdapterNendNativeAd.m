@@ -6,129 +6,153 @@
 //
 
 #import "GADMAdapterNendNativeAd.h"
+
 #import "GADMAdapterNend.h"
 #import "GADMAdapterNendConstants.h"
-#import "GADNendNativeAdLoader.h"
+#import "GADMAdapterNendNativeAdLoader.h"
 
 @interface GADMAdapterNendNativeAd () <NADNativeDelegate>
 
-@property(nonatomic, strong) NADNative *nativeAd;
-@property(nonatomic, strong) GADNativeAdImage *mappedIcon;
-@property(nonatomic, strong) NSArray *mappedImages;
-@property(nonatomic, strong) UILabel *advertisingExplicitlyView;
-
 @end
 
-@implementation GADMAdapterNendNativeAd
+@implementation GADMAdapterNendNativeAd {
+  /// nend native ad.
+  NADNative *_nativeAd;
 
-- (instancetype)initWithNormal:(NADNative *)ad
-                          logo:(nullable GADNativeAdImage *)logo
-                         image:(nullable GADNativeAdImage *)image {
-    self = [super init];
-    if (self) {
-        _nativeAd = ad;
-        _nativeAd.delegate = self;
-        _advertisingExplicitlyView = [UILabel new];
-        _advertisingExplicitlyView.text = [_nativeAd prTextForAdvertisingExplicitly:NADNativeAdvertisingExplicitlyPR];
-        
-        if (logo) {
-            _mappedIcon = logo;
-        }
-        if (image) {
-            _mappedImages = [NSArray arrayWithObject:image];
-        }
+  /// Icon image.
+  GADNativeAdImage *_mappedIcon;
+
+  /// Array of Images.
+  NSArray<GADNativeAdImage *> *_mappedImages;
+
+  /// nend AdChoices view.
+  UILabel *_advertisingExplicitlyView;
+
+  /// nend media view.
+  UIImageView *_imageView;
+
+  /// Media content aspect ratio.
+  CGFloat _mediaContentAspectRatio;
+}
+
+- (nonnull instancetype)initWithNativeAd:(nonnull NADNative *)ad
+                                    logo:(nullable GADNativeAdImage *)logo
+                                   image:(nullable GADNativeAdImage *)image {
+  self = [super init];
+  if (self) {
+    _nativeAd = ad;
+    _nativeAd.delegate = self;
+    _advertisingExplicitlyView = [[UILabel alloc] init];
+    _advertisingExplicitlyView.text =
+        [_nativeAd prTextForAdvertisingExplicitly:NADNativeAdvertisingExplicitlyPR];
+    _imageView = [[UIImageView alloc] init];
+
+    if (logo) {
+      _mappedIcon = logo;
     }
-    return self;
+
+    if (image) {
+      _mappedImages = [NSArray arrayWithObject:image];
+      _imageView.image = image.image;
+      _mediaContentAspectRatio = image.image.size.height / image.image.size.width;
+    } else {
+      _mediaContentAspectRatio = 0.0f;
+    }
+  }
+  return self;
 }
 
 - (BOOL)hasVideoContent {
-    return false;
+  return false;
 }
 
-- (UIView *)mediaView {
-    return nil;
+- (nullable UIView *)mediaView {
+  return _imageView;
 }
 
-- (NSString *)advertiser {
-    return self.nativeAd.promotionName;
+- (CGFloat)mediaContentAspectRatio {
+  return _mediaContentAspectRatio;
 }
 
-- (NSString *)headline {
-    return self.nativeAd.shortText;
+- (nullable NSString *)advertiser {
+  return _nativeAd.promotionName;
 }
 
-- (NSArray *)images {
-    return self.mappedImages;
+- (nullable NSString *)headline {
+  return _nativeAd.shortText;
 }
 
-- (NSString *)body {
-    return self.nativeAd.longText;
+- (nullable NSArray<GADNativeAdImage *> *)images {
+  return _mappedImages;
 }
 
-- (GADNativeAdImage *)icon {
-    return self.mappedIcon;
+- (nullable NSString *)body {
+  return _nativeAd.longText;
 }
 
-- (NSString *)callToAction {
-    return self.nativeAd.actionButtonText;
+- (nullable GADNativeAdImage *)icon {
+  return _mappedIcon;
 }
 
-- (NSDecimalNumber *)starRating {
-    return nil;
+- (nullable NSString *)callToAction {
+  return _nativeAd.actionButtonText;
 }
 
-- (NSString *)store {
-    return nil;
+- (nullable NSDecimalNumber *)starRating {
+  return nil;
 }
 
-- (NSString *)price {
-    return nil;
+- (nullable NSString *)store {
+  return nil;
 }
 
-- (NSDictionary *)extraAssets {
-    return nil;
+- (nullable NSString *)price {
+  return nil;
 }
 
-- (UIView *)adChoicesView {
-    return self.advertisingExplicitlyView;
+- (nullable NSDictionary<NSString *, id> *)extraAssets {
+  return nil;
 }
 
-- (void)didRenderInView:(UIView *)view clickableAssetViews:(NSDictionary<GADUnifiedNativeAssetIdentifier,UIView *> *)clickableAssetViews nonclickableAssetViews:(NSDictionary<GADUnifiedNativeAssetIdentifier,UIView *> *)nonclickableAssetViews viewController:(UIViewController *)viewController
-{
-    [self.nativeAd activateAdView:view withPrLabel:self.adChoicesView];
+- (nullable UIView *)adChoicesView {
+  return _advertisingExplicitlyView;
 }
 
-- (BOOL)handlesUserImpressions
-{
-    return [GADNendNativeAdLoader handlesUserImpressions];
+- (void)didRenderInView:(nonnull UIView *)view
+       clickableAssetViews:
+           (nonnull NSDictionary<GADUnifiedNativeAssetIdentifier, UIView *> *)clickableAssetViews
+    nonclickableAssetViews:
+        (nonnull NSDictionary<GADUnifiedNativeAssetIdentifier, UIView *> *)nonclickableAssetViews
+            viewController:(nonnull UIViewController *)viewController {
+  [_nativeAd activateAdView:view withPrLabel:self.adChoicesView];
 }
 
-- (BOOL)handlesUserClicks
-{
-    return [GADNendNativeAdLoader handlesUserClicks];
+- (BOOL)handlesUserImpressions {
+  return YES;
+}
+
+- (BOOL)handlesUserClicks {
+  return YES;
 }
 
 #pragma mark - NADNativeDelegate
-- (void)nadNativeDidImpression:(NADNative *)ad
-{
-    //Note : Adapter report click event here,
-    //       but Google-Mobile-Ads-SDK does'n send event to App...
-    [GADMediatedUnifiedNativeAdNotificationSource mediatedNativeAdDidRecordImpression:self];
+- (void)nadNativeDidImpression:(nonnull NADNative *)ad {
+  // Note : Adapter report click event here,
+  //       but Google-Mobile-Ads-SDK does'n send event to App...
+  [GADMediatedUnifiedNativeAdNotificationSource mediatedNativeAdDidRecordImpression:self];
 }
 
-- (void)nadNativeDidClickAd:(NADNative *)ad
-{
-    //Note : Adapter report click event here,
-    //       but Google-Mobile-Ads-SDK does'n send event to App...
-    [GADMediatedUnifiedNativeAdNotificationSource mediatedNativeAdDidRecordClick:self];
-    
-    // It's OK to reach event to App.
-    [GADMediatedUnifiedNativeAdNotificationSource mediatedNativeAdWillLeaveApplication:self];
+- (void)nadNativeDidClickAd:(nonnull NADNative *)ad {
+  // Note : Adapter report click event here,
+  //       but Google-Mobile-Ads-SDK does'n send event to App...
+  [GADMediatedUnifiedNativeAdNotificationSource mediatedNativeAdDidRecordClick:self];
+
+  // It's OK to reach event to App.
+  [GADMediatedUnifiedNativeAdNotificationSource mediatedNativeAdWillLeaveApplication:self];
 }
 
-- (void)nadNativeDidClickInformation:(NADNative *)ad
-{
-    [GADMediatedUnifiedNativeAdNotificationSource mediatedNativeAdWillLeaveApplication:self];
+- (void)nadNativeDidClickInformation:(nonnull NADNative *)ad {
+  [GADMediatedUnifiedNativeAdNotificationSource mediatedNativeAdWillLeaveApplication:self];
 }
 
 @end

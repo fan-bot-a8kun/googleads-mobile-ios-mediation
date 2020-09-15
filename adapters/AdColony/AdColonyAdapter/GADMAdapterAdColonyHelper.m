@@ -102,6 +102,13 @@
     options = [self getAdOptionsFromExtras:extras];
   }
 
+  if (adConfig.bidResponse) {
+    if (options == nil) {
+      options = [AdColonyAdOptions new];
+    }
+    [options setOption:kGADMAdapterAdColonyAdMarkupKey withStringValue:adConfig.bidResponse];
+  }
+
   return options;
 }
 
@@ -161,35 +168,16 @@
   [self setupZoneFromSettings:credentials options:options callback:callback];
 }
 
-+ (nullable NSDictionary *)getDictionaryFromJsonString:(nonnull NSString *)jsonString {
-  NSData *objectData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-  NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:objectData
-                                                             options:NSJSONReadingMutableContainers
-                                                               error:nil];
-  return dictionary;
-}
-
-// Method to build JSON from dictionary
-+ (nullable NSString *)getJsonStringFromDictionary:(nonnull NSDictionary *)dictionary {
-  NSString *json = nil;
-  NSError *error;
-
-  NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dictionary
-                                                     options:NSJSONWritingPrettyPrinted
-                                                       error:&error];
-  if (!error) {
-    json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-  }
-  return json;
-}
-
 @end
 
-NSError *GADMAdapterAdColonyErrorWithCodeAndDescription(NSUInteger code,
-                                                        NSString *_Nonnull description) {
-  return [NSError errorWithDomain:kGADMAdapterAdColonyErrorDomain
-                             code:code
-                         userInfo:@{NSLocalizedDescriptionKey : description}];
+NSError *_Nonnull GADMAdapterAdColonyErrorWithCodeAndDescription(GADMAdapterAdColonyErrorCode code,
+                                                                 NSString *_Nonnull description) {
+  NSDictionary *userInfo =
+      @{NSLocalizedDescriptionKey : description, NSLocalizedFailureReasonErrorKey : description};
+  NSError *error = [NSError errorWithDomain:kGADMAdapterAdColonyErrorDomain
+                                       code:code
+                                   userInfo:userInfo];
+  return error;
 }
 
 void GADMAdapterAdColonyMutableSetAddObject(NSMutableSet *_Nullable set,
@@ -212,23 +200,6 @@ NSString *_Nullable GADMAdapterAdColonyZoneIDForSettings(
   return zoneID;
 }
 
-NSString *_Nullable GADMAdapterAdColonyZoneIDForReply(NSString *_Nonnull reply) {
-  if (!reply) {
-    return nil;
-  }
-  NSDictionary *bidData = [GADMAdapterAdColonyHelper getDictionaryFromJsonString:reply];
-  NSString *zoneId = bidData[@"zone"];
-  return zoneId;
-}
-
-void GADMAdapterAdColonyMutableDictionarySetObjectForKey(NSMutableDictionary *_Nonnull dictionary,
-                                                         id<NSCopying> _Nullable key,
-                                                         id _Nullable value) {
-  if (value && key) {
-    dictionary[key] = value;  // Allow pattern.
-  }
-}
-
 void GADMAdapterAdColonyMutableArrayAddObject(NSMutableArray *_Nullable array,
                                               NSObject *_Nonnull object) {
   if (object) {
@@ -241,4 +212,11 @@ void GADMAdapterAdColonyMutableSetAddObjectsFromArray(NSMutableSet *_Nullable se
   if (array) {
     [set addObjectsFromArray:array];
   }
+}
+
+dispatch_time_t GADMAdapterAdColonyDispatchTimeForInterval(NSTimeInterval interval) {
+  if (interval < 0) {
+    return DISPATCH_TIME_NOW;
+  }
+  return dispatch_time(DISPATCH_TIME_NOW, (int64_t)(interval * NSEC_PER_SEC));  // Allow pattern.
 }

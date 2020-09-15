@@ -29,22 +29,12 @@
 			name = Framework;
 			productName = Framework;
 		};
-		7DFABB531DA86A1100322E02 /* FatAdapter */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 7DFABB541DA86A1100322E02 /* Build configuration list for PBXAggregateTarget "FatAdapter" */;
-			buildPhases = (
-				7DFABB571DA86A4100322E02 /* Static Library Script */,
-			);
-			dependencies = (
-			);
-			name = FatAdapter;
-			productName = FatAdapter;
-		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
 		00AC999622E9265A00262599 /* GADMAdapterTapjoyUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 00AC999422E9265A00262599 /* GADMAdapterTapjoyUtils.h */; };
 		00AC999722E9265A00262599 /* GADMAdapterTapjoyUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AC999522E9265A00262599 /* GADMAdapterTapjoyUtils.m */; };
+		239E23272485A091001BA5C9 /* GADMAdapterTapjoyDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 239E23262485A091001BA5C9 /* GADMAdapterTapjoyDelegate.h */; };
 		452D97DA22A6F2DA009F8F71 /* GADMRewardedAdTapjoy.h in Headers */ = {isa = PBXBuildFile; fileRef = 452D97D822A6F2DA009F8F71 /* GADMRewardedAdTapjoy.h */; };
 		452D97DB22A6F2DA009F8F71 /* GADMRewardedAdTapjoy.m in Sources */ = {isa = PBXBuildFile; fileRef = 452D97D922A6F2DA009F8F71 /* GADMRewardedAdTapjoy.m */; };
 		453B0B3C229F60B400D60AB3 /* GADMRTBInterstitialRendererTapjoy.h in Headers */ = {isa = PBXBuildFile; fileRef = 453B0B3A229F60B400D60AB3 /* GADMRTBInterstitialRendererTapjoy.h */; };
@@ -86,6 +76,7 @@
 		00AC999422E9265A00262599 /* GADMAdapterTapjoyUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GADMAdapterTapjoyUtils.h; sourceTree = "<group>"; };
 		00AC999522E9265A00262599 /* GADMAdapterTapjoyUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GADMAdapterTapjoyUtils.m; sourceTree = "<group>"; };
 		00DD263222F108AE0039C1D4 /* Script_Validate.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = Script_Validate.sh; sourceTree = "<group>"; };
+		239E23262485A091001BA5C9 /* GADMAdapterTapjoyDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GADMAdapterTapjoyDelegate.h; sourceTree = "<group>"; };
 		452D97D822A6F2DA009F8F71 /* GADMRewardedAdTapjoy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GADMRewardedAdTapjoy.h; sourceTree = "<group>"; };
 		452D97D922A6F2DA009F8F71 /* GADMRewardedAdTapjoy.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GADMRewardedAdTapjoy.m; sourceTree = "<group>"; };
 		453B0B3A229F60B400D60AB3 /* GADMRTBInterstitialRendererTapjoy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GADMRTBInterstitialRendererTapjoy.h; sourceTree = "<group>"; };
@@ -101,7 +92,6 @@
 		7D9083761E4BCB3E0071C8AD /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		7D9083781E4BCF4C0071C8AD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		7D9552B11DC006E5005DCE8D /* Script_Framework.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Script_Framework.sh; sourceTree = "<group>"; };
-		7D9552B21DC006E5005DCE8D /* Script_Library.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Script_Library.sh; sourceTree = "<group>"; };
 		7DE821BF1DB04B5000AA08CF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		7DFABB1D1DA8682C00322E02 /* libAdapter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAdapter.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		88898C1C1DDFD11700B0E673 /* GADMAdapterTapjoy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADMAdapterTapjoy.h; sourceTree = "<group>"; };
@@ -140,6 +130,7 @@
 				45E6363C2238809E006EB5A1 /* GADMAdapterTapjoyConstants.h */,
 				4588B2E422498B4800868387 /* GADMAdapterTapjoySingleton.h */,
 				4588B2E522498B4800868387 /* GADMAdapterTapjoySingleton.m */,
+				239E23262485A091001BA5C9 /* GADMAdapterTapjoyDelegate.h */,
 				00AC999422E9265A00262599 /* GADMAdapterTapjoyUtils.h */,
 				00AC999522E9265A00262599 /* GADMAdapterTapjoyUtils.m */,
 				45E6363422386F39006EB5A1 /* GADMediationAdapterTapjoy.h */,
@@ -166,7 +157,6 @@
 			isa = PBXGroup;
 			children = (
 				7D9083781E4BCF4C0071C8AD /* README.md */,
-				7D9552B21DC006E5005DCE8D /* Script_Library.sh */,
 				7D9552B11DC006E5005DCE8D /* Script_Framework.sh */,
 				00DD263222F108AE0039C1D4 /* Script_Validate.sh */,
 			);
@@ -219,6 +209,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				239E23272485A091001BA5C9 /* GADMAdapterTapjoyDelegate.h in Headers */,
 				00AC999622E9265A00262599 /* GADMAdapterTapjoyUtils.h in Headers */,
 				4588B2E622498B4800868387 /* GADMAdapterTapjoySingleton.h in Headers */,
 				453B0B3C229F60B400D60AB3 /* GADMRTBInterstitialRendererTapjoy.h in Headers */,
@@ -258,7 +249,7 @@
 		7DFABB151DA8682C00322E02 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = Google;
 				TargetAttributes = {
 					7D1B6CA21DC2ACF900D8CABF = {
@@ -267,18 +258,15 @@
 					7DFABB1C1DA8682C00322E02 = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
-					7DFABB531DA86A1100322E02 = {
-						CreatedOnToolsVersion = 7.3.1;
-					};
 				};
 			};
 			buildConfigurationList = 7DFABB181DA8682C00322E02 /* Build configuration list for PBXProject "TapjoyAdapter" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
+				Base,
 			);
 			mainGroup = 7DFABB141DA8682C00322E02;
 			productRefGroup = 7DFABB1E1DA8682C00322E02 /* Products */;
@@ -286,7 +274,6 @@
 			projectRoot = "";
 			targets = (
 				7DFABB1C1DA8682C00322E02 /* Adapter */,
-				7DFABB531DA86A1100322E02 /* FatAdapter */,
 				7D1B6CA21DC2ACF900D8CABF /* Framework */,
 				00DD263322F108B40039C1D4 /* ValidateSourceCode */,
 			);
@@ -322,20 +309,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/BuildScript/Script_Framework.sh\"";
 		};
-		7DFABB571DA86A4100322E02 /* Static Library Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Static Library Script";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/BuildScript/Script_Library.sh\"";
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -367,6 +340,7 @@
 		00DD263622F108B40039C1D4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MODULE_MAP_PATH = "$(SRCROOT)/Public";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -375,6 +349,7 @@
 		00DD263722F108B40039C1D4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MODULE_MAP_PATH = "$(SRCROOT)/Public";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -383,6 +358,7 @@
 		7D1B6CA41DC2ACF900D8CABF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MODULE_MAP_PATH = "$(SRCROOT)/Public";
 			};
 			name = Debug;
@@ -390,6 +366,7 @@
 		7D1B6CA51DC2ACF900D8CABF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MODULE_MAP_PATH = "$(SRCROOT)/Public";
 			};
 			name = Release;
@@ -399,17 +376,25 @@
 			baseConfigurationReference = 7D46CFDF1DB6B7CC0050F612 /* Adapter.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -432,7 +417,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
 		};
@@ -441,17 +428,25 @@
 			baseConfigurationReference = 7D46CFDF1DB6B7CC0050F612 /* Adapter.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -468,6 +463,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -476,6 +472,7 @@
 		7DFABB271DA8682C00322E02 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MODULE_MAP_PATH = "$(SRCROOT)/Public";
 				SKIP_INSTALL = YES;
 			};
@@ -484,22 +481,9 @@
 		7DFABB281DA8682C00322E02 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MODULE_MAP_PATH = "$(SRCROOT)/Public";
 				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		7DFABB551DA86A1100322E02 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				MODULE_MAP_PATH = "$(SRCROOT)/Public";
-			};
-			name = Debug;
-		};
-		7DFABB561DA86A1100322E02 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				MODULE_MAP_PATH = "$(SRCROOT)/Public";
 			};
 			name = Release;
 		};
@@ -538,15 +522,6 @@
 			buildConfigurations = (
 				7DFABB271DA8682C00322E02 /* Debug */,
 				7DFABB281DA8682C00322E02 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		7DFABB541DA86A1100322E02 /* Build configuration list for PBXAggregateTarget "FatAdapter" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				7DFABB551DA86A1100322E02 /* Debug */,
-				7DFABB561DA86A1100322E02 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

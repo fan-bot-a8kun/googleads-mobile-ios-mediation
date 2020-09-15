@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC.
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +13,10 @@
 // limitations under the License.
 
 #import "GADMAdapterTapjoyUtils.h"
+
+#import <Tapjoy/Tapjoy.h>
+
+#import "GADMAdapterTapjoyConstants.h"
 
 void GADMAdapterTapjoyMutableSetAddObject(NSMutableSet *_Nullable set, NSObject *_Nonnull object) {
   if (object) {
@@ -34,8 +38,44 @@ void GADMAdapterTapjoyMutableArrayRemoveObject(NSMutableArray *_Nullable array,
   }
 }
 
+void GADMAdapterTapjoyMapTableSetObjectForKey(NSMapTable *_Nonnull mapTable,
+                                              id<NSCopying> _Nullable key, id _Nullable value) {
+  if (value && key) {
+    [mapTable setObject:value forKey:key];  // Allow pattern.
+  }
+}
+
 void GADMAdapterTapjoyMapTableRemoveObjectForKey(NSMapTable *_Nullable mapTable, id _Nullable key) {
   if (key) {
     [mapTable removeObjectForKey:key];  // Allow pattern.
   }
+}
+
+void GADMAdapterTapjoyMutableDictionarySetObjectForKey(NSMutableDictionary *_Nonnull dictionary,
+                                                       id<NSCopying> _Nullable key,
+                                                       id _Nullable value) {
+  if (value && key) {
+    dictionary[key] = value;  // Allow pattern.
+  }
+}
+
+NSError *_Nonnull GADMAdapterTapjoyErrorWithCodeAndDescription(GADMAdapterTapjoyErrorCode code,
+                                                               NSString *_Nonnull description) {
+  NSDictionary *userInfo =
+      @{NSLocalizedDescriptionKey : description, NSLocalizedFailureReasonErrorKey : description};
+  return [NSError errorWithDomain:kGADMAdapterTapjoyErrorDomain code:code userInfo:userInfo];
+}
+
+NSDictionary<NSString *, id> *_Nonnull GADMAdapterTapjoyAuctionDataForResponseData(
+    NSDictionary<id, id> *_Nullable responseData) {
+  NSMutableDictionary<NSString *, id> *auctionData = [[NSMutableDictionary alloc] init];
+
+  if (responseData) {
+    GADMAdapterTapjoyMutableDictionarySetObjectForKey(auctionData, TJ_AUCTION_DATA,
+                                                      responseData[TJ_AUCTION_DATA]);
+    GADMAdapterTapjoyMutableDictionarySetObjectForKey(auctionData, TJ_AUCTION_ID,
+                                                      responseData[TJ_AUCTION_ID]);
+  }
+
+  return auctionData;
 }

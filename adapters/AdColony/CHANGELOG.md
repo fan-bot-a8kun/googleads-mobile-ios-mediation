@@ -1,5 +1,60 @@
 ## AdColony iOS Mediation Adapter Changelog
 
+#### Version 4.3.1.0
+- Verified compatibility with AdColony SDK 4.3.1.
+
+Built and tested with
+- Google Mobile Ads SDK version 7.64.0.
+- AdColony SDK version 4.3.1.
+
+#### Version 4.3.0.0
+- Verified compatibility with AdColony SDK 4.3.0.
+- Now requires Google Mobile Ads SDK version 7.64.0 or higher.
+
+Built and tested with
+- Google Mobile Ads SDK version 7.64.0.
+- AdColony SDK version 4.3.0.
+
+#### Version 4.1.5.0
+- Verified compatibility with AdColony SDK 4.1.5.
+- Updated the minimum required Google Mobile Ads SDK version to 7.60.0.
+
+Built and tested with
+- Google Mobile Ads SDK version 7.60.0.
+- AdColony SDK version 4.1.5.
+
+#### Version 4.1.4.1
+- Added standardized adapter error codes and messages.
+- Removed support for the i386 architecture.
+
+Built and tested with
+- Google Mobile Ads SDK version 7.57.0.
+- AdColony SDK version 4.1.4.
+
+#### Version 4.1.4.0
+- Verified compatibility with AdColony SDK 4.1.4.
+
+Built and tested with
+- Google Mobile Ads SDK version 7.56.0.
+- AdColony SDK version 4.1.4.
+
+#### Version 4.1.3.1
+- Fixed AdColony mediation network adapter version string.
+
+Built and tested with
+- Google Mobile Ads SDK version 7.55.0.
+- AdColony SDK version 4.1.3.
+
+#### Version 4.1.3.0 (Deprecated)
+- Known issue: Incorrectly reports the mediation adapter version as 4.1.2.0.
+  Please use version 4.1.3.1 or higher.
+- Verified compatibility with AdColony SDK 4.1.3.
+- Adding code to re-request ads for OB requests when the AdColony ad expires.
+
+Built and tested with
+- Google Mobile Ads SDK version 7.55.0.
+- AdColony SDK version 4.1.3.
+
 #### Version 4.1.2.0
 - Verified compatibility with AdColony SDK 4.1.2.
 - Added support for banner ads.

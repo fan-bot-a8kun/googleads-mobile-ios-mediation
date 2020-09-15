@@ -1,5 +1,69 @@
 ## Tapjoy iOS Mediation Adapter Changelog
 
+#### Version 12.6.1.0
+- Verified compatibility with Tapjoy SDK 12.6.1.
+
+Build and tested with
+- Google Mobile Ads SDK version 7.61.0.
+- Tapjoy SDK version 12.6.1.
+
+#### Version 12.6.0.0
+- Verified compatibility with Tapjoy SDK 12.6.0.
+- Now requires Google Mobile Ads SDK version 7.61.0 or higher.
+
+Build and tested with
+- Google Mobile Ads SDK version 7.61.0.
+- Tapjoy SDK version 12.6.0.
+
+#### Version 12.4.2.2
+- Updated the adapter to be more consistent in forwarding ad event callbacks:
+    - Interstitial and rewarded ads now record clicks.
+    - Interstitial ads now forward `interstitialWillLeaveApplication:` when clicked.
+    - Rewarded ads now forward `willDismissFullScreenView:` when dismissed.
+- Added standardized adapter error codes and messages.
+- Now requires Google Mobile Ads SDK version 7.60.0 or higher.
+
+Build and tested with
+- Google Mobile Ads SDK version 7.60.0.
+- Tapjoy SDK version 12.4.2.
+
+#### Version 12.4.2.1
+- Adapter now fails if the request to Tapjoy returns without any available content.
+- Removed support for the i386 architecture.
+
+Build and tested with
+- Google Mobile Ads SDK version 7.57.0.
+- Tapjoy SDK version 12.4.2.
+
+#### Version 12.4.2.0
+- Verified compatibility with Tapjoy SDK 12.4.2.
+- Now requires minimum iOS version 9.0.
+
+Build and tested with
+- Google Mobile Ads SDK version 7.55.0.
+- Tapjoy SDK version 12.4.2.
+
+#### Version 12.4.1.0
+- Verified compatibility with Tapjoy SDK 12.4.1.
+
+Build and tested with
+- Google Mobile Ads SDK version 7.53.1.
+- Tapjoy SDK version 12.4.1.
+
+#### Version 12.4.0.0
+- Verified compatibility with Tapjoy SDK 12.4.0.
+
+Build and tested with
+- Google Mobile Ads SDK version 7.53.1.
+- Tapjoy SDK version 12.4.0.
+
+#### Version 12.3.4.0
+- Verified compatibility with Tapjoy SDK 12.3.4.
+
+Build and tested with
+- Google Mobile Ads SDK version 7.52.0.
+- Tapjoy SDK version 12.3.4.
+
 #### Version 12.3.3.0
 - Verified compatibility with Tapjoy SDK 12.3.3.
 

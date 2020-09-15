@@ -5,9 +5,29 @@
 //  Copyright © 2019 FAN Communications. All rights reserved.
 //
 
-#import "GADNendNativeAdLoader.h"
+#import <Foundation/Foundation.h>
+#import <GoogleMobileAds/GoogleMobileAds.h>
+#import <NendAd/NendAd.h>
 
-@interface GADMAdapterNendNativeAdLoader : GADNendNativeAdLoader
+#import "GADMAdapterNend.h"
+#import "GADMAdapterNendConstants.h"
+#import "GADMAdapterNendExtras.h"
 
-- (void)loadNativeAdForAdConfiguration:(GADMediationNativeAdConfiguration *)adConfiguration completionHandler:(GADMediationNativeLoadCompletionHandler)completionHandler;
+@protocol GADMAdapterNendNativeAdLoaderDelegate <NSObject>
+
+- (void)didFailToLoadWithError:(nonnull NSError *)error;
+- (void)didReceiveUnifiedNativeAd:(nonnull id<GADMediationNativeAd>)ad;
+
+@end
+
+@interface GADMAdapterNendNativeAdLoader : NSObject
+
+typedef void (^NADNativeVideoCompletionBlock)(NADNativeVideo *_Nullable ad,
+                                              NSError *_Nullable error);
+
+- (void)fetchNativeAd:(nonnull NSArray<GADAdLoaderOptions *> *)options
+               spotId:(NSInteger)spotId
+               apiKey:(nonnull NSString *)apiKey
+                extra:(nonnull GADMAdapterNendExtras *)extras;
+
 @end
